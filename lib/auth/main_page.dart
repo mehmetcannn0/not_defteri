@@ -22,9 +22,15 @@ class MainPage extends StatelessWidget {
                       onTap: () {
                         FirebaseAuth.instance.signOut();
                       },
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text("cıkıs"),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(FirebaseAuth.instance.currentUser!.uid),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text("cıkıs"),
+                          ),
+                        ],
                       )),
                 ),
               );

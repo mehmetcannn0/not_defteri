@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:not_defteri/pages/login_page.dart';
+import 'package:not_defteri/pages/register_page.dart';
 
 class AuthPage extends StatefulWidget {
   const AuthPage({super.key});
@@ -21,7 +22,9 @@ class _AuthPageState extends State<AuthPage> {
     if (showLoginPage) {
       return LoginPage(showRegisterPage: toggleScreens);
     } else {
-      return Text("register");
+      return RegisterPage(
+        showLoginPage: toggleScreens,
+      );
     }
   }
 }
