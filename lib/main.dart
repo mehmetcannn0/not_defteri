@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:not_defteri/auth/main_page.dart';
 import 'firebase/firebase_options.dart';
 
 void main() async {
@@ -18,15 +19,15 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: Scaffold(
-        appBar: AppBar(
-          title: Text("yeni uygulama"),
-        ),
-        body: Center(
-          child: Text("yeni uygulama body"),
-        ),
+      theme: ThemeData(
+        backgroundColor: Colors.grey[300],
+        dialogBackgroundColor: Colors.grey[200],
+        primaryColor: Colors.white,
+        primaryColorDark: Colors.black,
+        buttonColor: Colors.deepPurple,
       ),
+      debugShowCheckedModeBanner: false,
+      home: MainPage(),
     );
   }
 }
