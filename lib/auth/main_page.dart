@@ -1,6 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:not_defteri/auth/auth_page.dart';
+import 'package:not_defteri/pages/home_page.dart';
 
 class MainPage extends StatelessWidget {
   const MainPage({super.key});
@@ -13,27 +15,7 @@ class MainPage extends StatelessWidget {
           stream: FirebaseAuth.instance.authStateChanges(),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
-              return Scaffold(
-                appBar: AppBar(
-                  title: Text("home page"),
-                ),
-                body: Center(
-                  child: GestureDetector(
-                      onTap: () {
-                        FirebaseAuth.instance.signOut();
-                      },
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(FirebaseAuth.instance.currentUser!.uid),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text("cıkıs"),
-                          ),
-                        ],
-                      )),
-                ),
-              );
+              return HomePage();
             } else {
               return AuthPage();
             }
