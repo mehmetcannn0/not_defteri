@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:not_defteri/pages/forgot_password_page.dart';
 
 class LoginPage extends StatefulWidget {
   final VoidCallback showRegisterPage;
@@ -22,10 +23,22 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future singIn() async {
-    await FirebaseAuth.instance.signInWithEmailAndPassword(
-      email: _emailController.text,
-      password: _passwordController.text,
-    );
+    try {
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: _emailController.text,
+        password: _passwordController.text,
+      );
+    } on FirebaseAuthException catch (e) {
+      print("hata :  ${e}");
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            content: Text("Error: ${e.message}"),
+          );
+        },
+      );
+    }
   }
 
   @override
@@ -137,7 +150,11 @@ class _LoginPageState extends State<LoginPage> {
                     children: [
                       GestureDetector(
                         onTap: (() {
-                          print("forgot password a gıtmeli");
+                          Navigator.push(context,
+                              MaterialPageRoute(builder: (context) {
+                            return const ForgotPassword();
+                          }));
+                          // print("forgot password a gıtmeli");
                         }),
                         child: const Text(
                           "Forgot Password?",

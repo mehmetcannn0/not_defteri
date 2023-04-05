@@ -20,30 +20,66 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future addData(String title, String content, String uid) async {
-    await db.collection("notes-${user.uid}").add({
-      'title': title,
-      'content': content,
-      'time': DateTime.now().toString()
-    });
+    try {
+      await db.collection("notes-${user.uid}").add({
+        'title': title,
+        'content': content,
+        'time': DateTime.now().toString()
+      });
+    } on FirebaseException catch (e) {
+      print("hata :  ${e}");
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            content: Text("Error: ${e.message}"),
+          );
+        },
+      );
+    }
   }
 
   List<String> datas = [];
 
   Future getData(String uid) async {
-    final notesRef = db.collection("notes-${user.uid}");
-    QuerySnapshot<Map<String, dynamic>> deneme = await notesRef
-        // .where("userId", isEqualTo: user.uid.toString())
-        .orderBy("time", descending: true)
-        .get();
+    try {
+      final notesRef = db.collection("notes-${user.uid}");
+      QuerySnapshot<Map<String, dynamic>> deneme = await notesRef
+          // .where("userId", isEqualTo: user.uid.toString())
+          .orderBy("time", descending: true)
+          .get();
 
-    return deneme;
+      return deneme;
+    } on FirebaseException catch (e) {
+      print("hata :  ${e}");
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            content: Text("Error: ${e.message}"),
+          );
+        },
+      );
+    }
   }
 
   Future delData(String id) async {
-    await db.collection("notes-${user.uid}").doc(id).delete();
-    print("delete calıstı");
+    try {
+      await db.collection("notes-${user.uid}").doc(id).delete();
+      print("delete calıstı");
 
-    setState(() {});
+      setState(() {});
+    } on FirebaseException catch (e) {
+      print("hata :  ${e}");
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            content: Text("Error: ${e.message}"),
+          );
+        },
+      );
+    }
   }
 
   @override
@@ -70,7 +106,7 @@ class _HomePageState extends State<HomePage> {
                     print(snapshot.data.docs.length);
                     // print(snapshot.data.docs.length);
                     return Container(
-                      color: Colors.blue,
+                      // color: Colors.blue,
                       height: size.height * 0.5,
                       child: ListView.builder(
                         // itemCount: datas.length,

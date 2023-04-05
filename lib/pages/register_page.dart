@@ -39,33 +39,57 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   Future signUp() async {
-    // create user
-    if (passwordConfirmed()) {
-      FirebaseAuth.instance
-          .createUserWithEmailAndPassword(
-            email: _emailController.text,
-            password: _passwordController.text,
-          )
-          .whenComplete(
-            //add detaıl
-            () => addUserDetails(
-              _firstNameController.text.trim(),
-              _lastNameController.text.trim(),
-              _emailController.text.trim(),
-              FirebaseAuth.instance.currentUser!.uid,
-            ),
+    try {
+      // create user
+      if (passwordConfirmed()) {
+        FirebaseAuth.instance
+            .createUserWithEmailAndPassword(
+              email: _emailController.text,
+              password: _passwordController.text,
+            )
+            .whenComplete(
+              //add detaıl
+              () => addUserDetails(
+                _firstNameController.text.trim(),
+                _lastNameController.text.trim(),
+                _emailController.text.trim(),
+                FirebaseAuth.instance.currentUser!.uid,
+              ),
+            );
+      }
+    } on FirebaseAuthException catch (e) {
+      print("hata :  ${e}");
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            content: Text("Error: ${e.message}"),
           );
+        },
+      );
     }
   }
 
   Future addUserDetails(
       String firstName, String lastName, String email, String uid) async {
-    await FirebaseFirestore.instance.collection('users').add({
-      'first name': firstName,
-      'last name': lastName,
-      'email': email,
-      'userId': uid
-    });
+    try {
+      await FirebaseFirestore.instance.collection('users').add({
+        'first name': firstName,
+        'last name': lastName,
+        'email': email,
+        'userId': uid
+      });
+    } on FirebaseAuthException catch (e) {
+      print("hata :  ${e}");
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            content: Text("Error: ${e.message}"),
+          );
+        },
+      );
+    }
   }
 
   bool passwordConfirmed() {
@@ -298,6 +322,9 @@ class _RegisterPageState extends State<RegisterPage> {
                       ),
                     ),
                   ],
+                ),
+                const SizedBox(
+                  height: 80,
                 ),
               ],
             ),
