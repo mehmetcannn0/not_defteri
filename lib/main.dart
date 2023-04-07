@@ -12,6 +12,11 @@ void main() async {
 
   runApp(const MyApp());
 }
+// TODO: renkler duzenlecek
+// TODO: drawer duzenlenecek
+// TODO: gereksiz printler + comment ler sılınecek
+// TODO: hata alınabılecek yerler test edılecek
+// TODO: data ekle butonu appbar a tasınacak
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
