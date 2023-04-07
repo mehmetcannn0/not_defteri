@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cool_alert/cool_alert.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:not_defteri/pages/detail.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -12,6 +14,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final user = FirebaseAuth.instance.currentUser!;
   FirebaseFirestore db = FirebaseFirestore.instance;
+  GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
@@ -118,20 +121,42 @@ class _HomePageState extends State<HomePage> {
                           return Padding(
                             padding:
                                 const EdgeInsets.symmetric(horizontal: 18.0),
-                            child: Card(
-                              elevation: 2,
-                              child: Padding(
+                            child: ListTile(
+                              trailing: GestureDetector(
+                                onTap: () {
+                                  CoolAlert.show(
+                                      context: context,
+                                      type: CoolAlertType.confirm,
+                                      text: 'Do you want to delete ?',
+                                      confirmBtnText: 'Yes',
+                                      cancelBtnText: 'No',
+                                      confirmBtnColor: Colors.red,
+                                      onConfirmBtnTap: () {
+                                        delData(snapshot.data.docs[index].id);
+                                        Navigator.pop(context);
+                                      });
+                                },
+                                child: Icon(
+                                  Icons.delete,
+                                  color: Colors.red,
+                                ),
+                              ),
+                              // elevation: 2,
+                              title: Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: GestureDetector(
                                     onTap: () {
-                                      delData(snapshot.data.docs[index].id);
+                                      //go to detail
+                                      // delData(snapshot.data.docs[index].id);
                                     },
                                     child: Column(
                                       children: [
                                         // Text(snapshot.data.docs[index]
                                         //     ["userId"]),
-                                        Text(snapshot.data.docs[index]
-                                            ["content"]),
+                                        Text(
+                                          snapshot.data.docs[index]["content"],
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
                                       ],
                                     )),
                               ),
@@ -149,14 +174,12 @@ class _HomePageState extends State<HomePage> {
             ),
             MaterialButton(
               onPressed: () {
-                addData(
-                  user.uid,
-                  DateTime.now().toString(),
-                  user.uid,
-                );
-                setState(
-                  () {},
-                );
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => DetailPage(
+                              id: user.uid,
+                            ))).then((value) => setState(() {}));
               },
               color: Colors.deepPurple[200],
               child: Text("data ekle"),
