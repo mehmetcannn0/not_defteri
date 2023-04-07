@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cool_alert/cool_alert.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:not_defteri/pages/detail.dart';
 
 class HomePage extends StatefulWidget {
@@ -19,7 +20,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    getData(user.uid);
+    getDatas(user.uid);
   }
 
   Future addData(String title, String content, String uid) async {
@@ -44,15 +45,15 @@ class _HomePageState extends State<HomePage> {
 
   List<String> datas = [];
 
-  Future getData(String uid) async {
+  Future getDatas(String uid) async {
     try {
       final notesRef = db.collection("notes-${user.uid}");
-      QuerySnapshot<Map<String, dynamic>> deneme = await notesRef
+      QuerySnapshot<Map<String, dynamic>> documents = await notesRef
           // .where("userId", isEqualTo: user.uid.toString())
           .orderBy("time", descending: true)
           .get();
 
-      return deneme;
+      return documents;
     } on FirebaseException catch (e) {
       print("hata :  ${e}");
       showDialog(
@@ -89,6 +90,28 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
+      appBar: AppBar(),
+      drawer: Container(
+        width: 115,
+        color: Theme.of(context).primaryColor,
+        child: Column(
+          children: [
+            Container(
+              child: Text("data"),
+            ),
+            MaterialButton(
+              onPressed: () {
+                FirebaseAuth.instance.signOut();
+              },
+              color: Colors.deepPurple[200],
+              child: Text("Sign Out"),
+            ),
+            SizedBox(
+              height: 15,
+            ),
+          ],
+        ),
+      ),
       body: SafeArea(
         child: Center(
             child: Column(
@@ -98,7 +121,7 @@ class _HomePageState extends State<HomePage> {
               height: 15,
             ),
             FutureBuilder(
-              future: getData(user.uid),
+              future: getDatas(user.uid),
               builder: (BuildContext context, snapshot) {
                 // List dataa = snapshot.data.docs;
                 // if (snapshot.data != null) {
@@ -110,7 +133,7 @@ class _HomePageState extends State<HomePage> {
                     // print(snapshot.data.docs.length);
                     return Container(
                       // color: Colors.blue,
-                      height: size.height * 0.5,
+                      height: size.height * 0.65,
                       child: ListView.builder(
                         // itemCount: datas.length,
                         itemCount: snapshot.data.docs.length,
@@ -118,47 +141,68 @@ class _HomePageState extends State<HomePage> {
                         itemBuilder: (BuildContext context, int index) {
                           // final data = snapshot.data[index];
                           // if (snapshot.data.docs[index]["userId"] == user.uid) {
-                          return Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 18.0),
-                            child: ListTile(
-                              trailing: GestureDetector(
-                                onTap: () {
-                                  CoolAlert.show(
-                                      context: context,
-                                      type: CoolAlertType.confirm,
-                                      text: 'Do you want to delete ?',
-                                      confirmBtnText: 'Yes',
-                                      cancelBtnText: 'No',
-                                      confirmBtnColor: Colors.red,
-                                      onConfirmBtnTap: () {
-                                        delData(snapshot.data.docs[index].id);
-                                        Navigator.pop(context);
-                                      });
-                                },
-                                child: Icon(
-                                  Icons.delete,
-                                  color: Colors.red,
-                                ),
-                              ),
-                              // elevation: 2,
-                              title: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: GestureDetector(
+                          return GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => DetailPage(
+                                            uid: user.uid,
+                                            id: snapshot.data.docs[index].id,
+                                          ))).then((value) => setState(() {}));
+
+                              print(snapshot.data.docs[index]["time"]);
+                            },
+                            child: Container(
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 18.0),
+                                child: ListTile(
+                                  subtitle: Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      Text(
+                                        snapshot.data.docs[index]["time"]
+                                            .substring(0, 10),
+                                      ),
+                                    ],
+                                  ),
+
+                                  trailing: GestureDetector(
                                     onTap: () {
-                                      //go to detail
-                                      // delData(snapshot.data.docs[index].id);
+                                      CoolAlert.show(
+                                          context: context,
+                                          type: CoolAlertType.confirm,
+                                          text: 'Do you want to delete ?',
+                                          confirmBtnText: 'Yes',
+                                          cancelBtnText: 'No',
+                                          confirmBtnColor: Colors.red,
+                                          onConfirmBtnTap: () {
+                                            delData(
+                                                snapshot.data.docs[index].id);
+                                            Navigator.pop(context);
+                                          });
                                     },
+                                    child: Icon(
+                                      Icons.delete,
+                                      color: Colors.red,
+                                    ),
+                                  ),
+                                  // elevation: 2,
+                                  title: Padding(
+                                    padding: const EdgeInsets.all(8.0),
                                     child: Column(
                                       children: [
                                         // Text(snapshot.data.docs[index]
                                         //     ["userId"]),
                                         Text(
-                                          snapshot.data.docs[index]["content"],
+                                          snapshot.data.docs[index]["title"],
                                           overflow: TextOverflow.ellipsis,
                                         ),
                                       ],
-                                    )),
+                                    ),
+                                  ),
+                                ),
                               ),
                             ),
                           );
@@ -178,8 +222,17 @@ class _HomePageState extends State<HomePage> {
                     context,
                     MaterialPageRoute(
                         builder: (context) => DetailPage(
-                              id: user.uid,
-                            ))).then((value) => setState(() {}));
+                              uid: user.uid,
+                              id: "",
+                            ))).then((value) {
+                  setState(() {});
+                  // CoolAlert.show(
+                  //   context: context,
+                  //   type: CoolAlertType.success,
+                  //   text: 'Note successfully added!',
+                  //   autoCloseDuration: Duration(seconds: 3),
+                  // );
+                });
               },
               color: Colors.deepPurple[200],
               child: Text("data ekle"),
@@ -187,25 +240,13 @@ class _HomePageState extends State<HomePage> {
             SizedBox(
               height: 15,
             ),
-            SizedBox(
-              height: 15,
-            ),
-            Text(
-              "Sign In as: " + user.email.toString() + " \n age :" + user.uid,
-            ),
-            SizedBox(
-              height: 15,
-            ),
-            MaterialButton(
-              onPressed: () {
-                FirebaseAuth.instance.signOut();
-              },
-              color: Colors.deepPurple[200],
-              child: Text("Sign Out"),
-            ),
-            SizedBox(
-              height: 15,
-            ),
+
+            // Text(
+            //   "Sign In as: " + user.email.toString() + " \n age :" + user.uid,
+            // ),
+            // SizedBox(
+            //   height: 15,
+            // ),
           ],
         )),
       ),
