@@ -30,8 +30,15 @@ class _ForgotPasswordState extends State<ForgotPassword> {
         },
       );
     } on FirebaseAuthException catch (e) {
-      print("on FirebaseAuthException catch --->");
-      print(e);
+      print("hata :  ${e}");
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            content: Text("Error: ${e.message}"),
+          );
+        },
+      );
 
       showDialog(
         context: context,
