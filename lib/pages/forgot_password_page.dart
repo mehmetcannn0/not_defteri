@@ -56,8 +56,8 @@ class _ForgotPasswordState extends State<ForgotPassword> {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.deepPurple[200],
-          elevation: 0,
+          backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
+          // elevation: 0,
         ),
         body: Column(
           mainAxisAlignment: MainAxisAlignment.center,
