@@ -103,6 +103,10 @@ class _RegisterPageState extends State<RegisterPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text("Register Now"),
+        backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
+      ),
       backgroundColor: Theme.of(context).backgroundColor,
       body: SafeArea(
         child: Center(
