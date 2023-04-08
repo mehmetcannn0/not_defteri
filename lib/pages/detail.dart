@@ -39,7 +39,6 @@ class _DetailPageState extends State<DetailPage> {
         'time': DateTime.now().toString()
       }).whenComplete(() => print("$title  $content  eklendi"));
     } on FirebaseException catch (e) {
-      print("hata :  ${e}");
       showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -60,7 +59,6 @@ class _DetailPageState extends State<DetailPage> {
         'time': DateTime.now().toString()
       }).whenComplete(() => print("$title  $content  guncellendı"));
     } on FirebaseException catch (e) {
-      print("hata :  ${e}");
       showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -82,7 +80,6 @@ class _DetailPageState extends State<DetailPage> {
       _contentController.text = document.data()!["content"];
       return document;
     } on FirebaseException catch (e) {
-      print("hata :  ${e}");
       showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -99,9 +96,11 @@ class _DetailPageState extends State<DetailPage> {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
+          backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
           centerTitle: true,
           title: Text("Add"),
         ),
+        backgroundColor: Theme.of(context).backgroundColor,
         body: Center(
           child: FutureBuilder(
             future: update ? getData(widget.uid, widget.id) : null,
@@ -112,7 +111,7 @@ class _DetailPageState extends State<DetailPage> {
                     SizedBox(
                       height: 15,
                     ),
-                    // Text(widget.id),
+
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 25.0),
                       child: Container(
@@ -125,8 +124,6 @@ class _DetailPageState extends State<DetailPage> {
                             padding: const EdgeInsets.only(left: 20.0),
                             child: TextFormField(
                               onChanged: (value) => _titleController.text,
-                              // initialValue: update.toString(),
-                              // update ? "kljlk" : "_titleController.text",
                               maxLines: null,
                               textInputAction: TextInputAction.next,
                               controller: _titleController,
@@ -153,7 +150,6 @@ class _DetailPageState extends State<DetailPage> {
                             padding: const EdgeInsets.only(left: 20.0),
                             child: TextFormField(
                               onChanged: (value) => _titleController.text,
-                              // initialValue: widget.id == "" ? null : widget.id,
                               maxLines: null,
                               textInputAction: TextInputAction.next,
                               controller: _contentController,
@@ -172,19 +168,19 @@ class _DetailPageState extends State<DetailPage> {
           ),
         ),
         floatingActionButton: FloatingActionButton(
+          backgroundColor: Theme.of(context).buttonColor,
+          foregroundColor: Theme.of(context).primaryColor,
           onPressed: () {
             if (update) {
               updateData(_titleController.text, _contentController.text,
                   widget.uid, widget.id);
               Navigator.pop(context, "update");
-              print('Note successfully saved!');
             } else {
               addData(
                 _titleController.text,
                 _contentController.text,
                 widget.uid,
               ).whenComplete(() => Navigator.pop(context, "add"));
-              print('Note successfully added!');
             }
           },
           child: Icon(Icons.save),
