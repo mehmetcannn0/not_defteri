@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cool_alert/cool_alert.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:not_defteri/pages/detail.dart';
 
 class HomePage extends StatefulWidget {
@@ -16,11 +15,37 @@ class _HomePageState extends State<HomePage> {
   final user = FirebaseAuth.instance.currentUser!;
   FirebaseFirestore db = FirebaseFirestore.instance;
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  String fName = "";
+  String lName = "";
 
   @override
   void initState() {
     super.initState();
+    getProfile(user.uid);
     getDatas(user.uid);
+  }
+
+  Future getProfile(String uid) async {
+    try {
+      final notesRef = db.collection("users");
+      QuerySnapshot<Map<String, dynamic>> document =
+          await notesRef.where("userId", isEqualTo: user.uid.toString()).get();
+      setState(() {
+        lName = document.docs[0].data()["last name"];
+        fName = document.docs[0].data()["first name"];
+      });
+
+      return document;
+    } on FirebaseException catch (e) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            content: Text("Error: ${e.message}"),
+          );
+        },
+      );
+    }
   }
 
   Future addData(String title, String content, String uid) async {
@@ -31,7 +56,6 @@ class _HomePageState extends State<HomePage> {
         'time': DateTime.now().toString()
       });
     } on FirebaseException catch (e) {
-      print("hata :  ${e}");
       showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -48,14 +72,11 @@ class _HomePageState extends State<HomePage> {
   Future getDatas(String uid) async {
     try {
       final notesRef = db.collection("notes-${user.uid}");
-      QuerySnapshot<Map<String, dynamic>> documents = await notesRef
-          // .where("userId", isEqualTo: user.uid.toString())
-          .orderBy("time", descending: true)
-          .get();
+      QuerySnapshot<Map<String, dynamic>> documents =
+          await notesRef.orderBy("time", descending: true).get();
 
       return documents;
     } on FirebaseException catch (e) {
-      print("hata :  ${e}");
       showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -70,11 +91,9 @@ class _HomePageState extends State<HomePage> {
   Future delData(String id) async {
     try {
       await db.collection("notes-${user.uid}").doc(id).delete();
-      print("delete calıstı");
 
       setState(() {});
     } on FirebaseException catch (e) {
-      print("hata :  ${e}");
       showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -90,7 +109,9 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
+      backgroundColor: Theme.of(context).backgroundColor,
       appBar: AppBar(
+        backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
         actions: [
           GestureDetector(
             onTap: () {
@@ -105,31 +126,85 @@ class _HomePageState extends State<HomePage> {
               });
             },
             child: Icon(
+              color: Theme.of(context).primaryColor,
               Icons.add,
               size: 35,
             ),
           )
         ],
       ),
+      drawerScrimColor: Theme.of(context).backgroundColor.withOpacity(0.7),
       drawer: Container(
-        width: 115,
-        color: Theme.of(context).primaryColor,
-        child: Column(
-          children: [
-            Container(
-              child: Text("data"),
-            ),
-            MaterialButton(
-              onPressed: () {
-                FirebaseAuth.instance.signOut();
-              },
-              color: Colors.deepPurple[200],
-              child: Text("Sign Out"),
-            ),
-            SizedBox(
-              height: 15,
-            ),
-          ],
+        width: 129,
+        color: Theme.of(context).backgroundColor,
+        child: Padding(
+          padding: const EdgeInsets.all(9.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Container(
+                child: Column(
+                  children: [
+                    CircleAvatar(
+                        // backgroundImage: NetworkImage(user.photoURL.toString()),
+                        ),
+                    Container(
+                      child: Text(fName),
+                    ),
+                    Container(
+                      child: Text(lName),
+                    ),
+                  ],
+                ),
+              ),
+              MaterialButton(
+                onPressed: () {},
+                color: Theme.of(context).buttonColor,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "Profile",
+                      style: TextStyle(color: Theme.of(context).primaryColor),
+                    ),
+                    Icon(Icons.person_outline,
+                        color: Theme.of(context).primaryColor),
+                  ],
+                ),
+              ),
+              MaterialButton(
+                onPressed: () {},
+                color: Theme.of(context).buttonColor,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "Info",
+                      style: TextStyle(color: Theme.of(context).primaryColor),
+                    ),
+                    Icon(Icons.info_outline,
+                        color: Theme.of(context).primaryColor),
+                  ],
+                ),
+              ),
+              MaterialButton(
+                onPressed: () {
+                  FirebaseAuth.instance.signOut();
+                },
+                color: Theme.of(context).buttonColor,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "Sign Out",
+                      style: TextStyle(color: Theme.of(context).primaryColor),
+                    ),
+                    Icon(Icons.logout, color: Theme.of(context).primaryColor),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
       body: SafeArea(
@@ -143,24 +218,14 @@ class _HomePageState extends State<HomePage> {
             FutureBuilder(
               future: getDatas(user.uid),
               builder: (BuildContext context, snapshot) {
-                // List dataa = snapshot.data.docs;
-                // if (snapshot.data != null) {
                 if (snapshot.hasData) {
                   if ((snapshot.data.docs.length) == 0) {
-                    return Text("data var ama bos ");
+                    return Text("No data, click the + to add :)");
                   } else {
-                    print(snapshot.data.docs.length);
-                    // print(snapshot.data.docs.length);
                     return Expanded(
-                      // color: Colors.blue,
-                      // height: size.height * 0.65,
                       child: ListView.builder(
-                        // itemCount: datas.length,
                         itemCount: snapshot.data.docs.length,
-
                         itemBuilder: (BuildContext context, int index) {
-                          // final data = snapshot.data[index];
-                          // if (snapshot.data.docs[index]["userId"] == user.uid) {
                           return GestureDetector(
                             onTap: () {
                               Navigator.push(
@@ -174,6 +239,7 @@ class _HomePageState extends State<HomePage> {
                               print(snapshot.data.docs[index]["time"]);
                             },
                             child: Card(
+                              color: Theme.of(context).primaryColor,
                               elevation: 3,
                               margin: EdgeInsets.symmetric(
                                   horizontal: 19, vertical: 9),
@@ -190,7 +256,6 @@ class _HomePageState extends State<HomePage> {
                                       ),
                                     ],
                                   ),
-
                                   trailing: GestureDetector(
                                     onTap: () {
                                       CoolAlert.show(
@@ -211,13 +276,10 @@ class _HomePageState extends State<HomePage> {
                                       color: Colors.red,
                                     ),
                                   ),
-                                  // elevation: 2,
                                   title: Padding(
                                     padding: const EdgeInsets.all(8.0),
                                     child: Column(
                                       children: [
-                                        // Text(snapshot.data.docs[index]
-                                        //     ["userId"]),
                                         Text(
                                           snapshot.data.docs[index]["title"],
                                           overflow: TextOverflow.ellipsis,
@@ -234,37 +296,19 @@ class _HomePageState extends State<HomePage> {
                     );
                   }
                 } else {
-                  print("CircularProgressIndicator");
-                  return CircularProgressIndicator();
+                  return Expanded(
+                    child: Center(
+                      child: CircularProgressIndicator(
+                        color: Theme.of(context).buttonColor,
+                      ),
+                    ),
+                  );
                 }
               },
             ),
-            // MaterialButton(
-            //   onPressed: () {
-            //     Navigator.push(
-            //         context,
-            //         MaterialPageRoute(
-            //             builder: (context) => DetailPage(
-            //                   uid: user.uid,
-            //                   id: "",
-            //                 ))).then((value) {
-            //       setState(() {});
-
-            //     });
-            //   },
-            //   color: Colors.deepPurple[200],
-            //   child: Text("data ekle"),
-            // ),
             SizedBox(
               height: 15,
             ),
-
-            // Text(
-            //   "Sign In as: " + user.email.toString() + " \n age :" + user.uid,
-            // ),
-            // SizedBox(
-            //   height: 15,
-            // ),
           ],
         )),
       ),
