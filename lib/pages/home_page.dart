@@ -90,7 +90,27 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        actions: [
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => DetailPage(
+                            uid: user.uid,
+                            id: "",
+                          ))).then((value) {
+                setState(() {});
+              });
+            },
+            child: Icon(
+              Icons.add,
+              size: 35,
+            ),
+          )
+        ],
+      ),
       drawer: Container(
         width: 115,
         color: Theme.of(context).primaryColor,
@@ -115,7 +135,7 @@ class _HomePageState extends State<HomePage> {
       body: SafeArea(
         child: Center(
             child: Column(
-          mainAxisAlignment: MainAxisAlignment.end,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
             SizedBox(
               height: 15,
@@ -131,9 +151,9 @@ class _HomePageState extends State<HomePage> {
                   } else {
                     print(snapshot.data.docs.length);
                     // print(snapshot.data.docs.length);
-                    return Container(
+                    return Expanded(
                       // color: Colors.blue,
-                      height: size.height * 0.65,
+                      // height: size.height * 0.65,
                       child: ListView.builder(
                         // itemCount: datas.length,
                         itemCount: snapshot.data.docs.length,
@@ -153,10 +173,13 @@ class _HomePageState extends State<HomePage> {
 
                               print(snapshot.data.docs[index]["time"]);
                             },
-                            child: Container(
+                            child: Card(
+                              elevation: 3,
+                              margin: EdgeInsets.symmetric(
+                                  horizontal: 19, vertical: 9),
                               child: Padding(
                                 padding: const EdgeInsets.symmetric(
-                                    horizontal: 18.0),
+                                    horizontal: 11.0),
                                 child: ListTile(
                                   subtitle: Row(
                                     mainAxisAlignment: MainAxisAlignment.end,
@@ -216,27 +239,22 @@ class _HomePageState extends State<HomePage> {
                 }
               },
             ),
-            MaterialButton(
-              onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => DetailPage(
-                              uid: user.uid,
-                              id: "",
-                            ))).then((value) {
-                  setState(() {});
-                  // CoolAlert.show(
-                  //   context: context,
-                  //   type: CoolAlertType.success,
-                  //   text: 'Note successfully added!',
-                  //   autoCloseDuration: Duration(seconds: 3),
-                  // );
-                });
-              },
-              color: Colors.deepPurple[200],
-              child: Text("data ekle"),
-            ),
+            // MaterialButton(
+            //   onPressed: () {
+            //     Navigator.push(
+            //         context,
+            //         MaterialPageRoute(
+            //             builder: (context) => DetailPage(
+            //                   uid: user.uid,
+            //                   id: "",
+            //                 ))).then((value) {
+            //       setState(() {});
+
+            //     });
+            //   },
+            //   color: Colors.deepPurple[200],
+            //   child: Text("data ekle"),
+            // ),
             SizedBox(
               height: 15,
             ),
