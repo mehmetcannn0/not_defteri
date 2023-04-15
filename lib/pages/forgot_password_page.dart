@@ -77,8 +77,8 @@ class _ForgotPasswordState extends State<ForgotPassword> {
               padding: const EdgeInsets.symmetric(horizontal: 25.0),
               child: Container(
                 decoration: BoxDecoration(
-                    color: Colors.grey[200],
-                    border: Border.all(color: Colors.white),
+                    color: Theme.of(context).dialogBackgroundColor,
+                    border: Border.all(color: Theme.of(context).primaryColor),
                     borderRadius: BorderRadius.circular(12)),
                 child: Padding(
                   padding: const EdgeInsets.only(left: 20.0),
@@ -99,7 +99,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
             MaterialButton(
               onPressed: passwordReset,
               child: const Text("Reset Password"),
-              color: Colors.deepPurple[200],
+              color: Theme.of(context).buttonColor,
             ),
           ],
         ),
