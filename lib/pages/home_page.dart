@@ -3,6 +3,7 @@ import 'package:cool_alert/cool_alert.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:not_defteri/pages/detail.dart';
+import 'package:not_defteri/pages/profile_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -14,7 +15,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final user = FirebaseAuth.instance.currentUser!;
   FirebaseFirestore db = FirebaseFirestore.instance;
-  GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  // GlobalKey<FormState> formKey = GlobalKey<FormState>();
   String fName = "";
   String lName = "";
 
@@ -158,7 +159,10 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
               MaterialButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.of(context).push(
+                      MaterialPageRoute(builder: (context) => ProfilePage()));
+                },
                 color: Theme.of(context).buttonColor,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
