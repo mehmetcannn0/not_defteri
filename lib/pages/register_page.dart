@@ -58,7 +58,6 @@ class _RegisterPageState extends State<RegisterPage> {
             );
       }
     } on FirebaseAuthException catch (e) {
-      print("hata :  ${e}");
       showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -80,7 +79,6 @@ class _RegisterPageState extends State<RegisterPage> {
         'userId': uid
       });
     } on FirebaseAuthException catch (e) {
-      print("hata :  ${e}");
       showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -118,9 +116,6 @@ class _RegisterPageState extends State<RegisterPage> {
                   Icons.android,
                   size: 75,
                 ),
-                // const SizedBox(
-                //   height: 25,
-                // ),
                 Text(
                   "Hello There",
                   style: GoogleFonts.bebasNeue(fontSize: 51),
