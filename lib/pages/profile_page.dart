@@ -1,8 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:not_defteri/pages/detail.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -33,7 +31,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(user.email.toString()),
-                  Text("onaylanmıs"),
+                  const Text("onaylanmıs"),
                   const SizedBox(
                     height: 10,
                   ),
@@ -54,7 +52,8 @@ class _ProfilePageState extends State<ProfilePage> {
                             obscureText: obscurepassword,
                             decoration: InputDecoration(
                               border: InputBorder.none,
-                              hintText: 'Password',
+                              labelText: 'Password',
+                              hintText: '******',
                               suffixIcon: GestureDetector(
                                 onTap: showPassword,
                                 child: Icon(
@@ -67,7 +66,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           ),
                         )),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 10,
                   ),
                   //confirm password
@@ -87,7 +86,8 @@ class _ProfilePageState extends State<ProfilePage> {
                             obscureText: obscurepassword,
                             decoration: InputDecoration(
                               border: InputBorder.none,
-                              hintText: 'Confirm Password',
+                              labelText: 'Confirm Password',
+                              hintText: '******',
                               suffixIcon: GestureDetector(
                                 onTap: showPassword,
                                 child: Icon(
@@ -100,7 +100,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           ),
                         )),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 10,
                   ),
                   MaterialButton(
@@ -124,7 +124,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           _passwordController.text = "";
                           _confirmPasswordController.text = "";
                         } on FirebaseAuthException catch (e) {
-                          print("hata :  ${e}");
+                          // print("hata :  ${e}");
                           showDialog(
                             context: context,
                             builder: (BuildContext context) {
@@ -145,8 +145,8 @@ class _ProfilePageState extends State<ProfilePage> {
                         );
                       }
                     },
-                    child: const Text("sifre yenıle"),
                     color: Theme.of(context).buttonColor,
+                    child: const Text("sifre yenıle"),
                   ),
                 ],
               ))
@@ -189,7 +189,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           },
                         );
                       } on FirebaseAuthException catch (e) {
-                        print("hata :  ${e}");
+                        // print("hata :  ${e}");
                         showDialog(
                           context: context,
                           builder: (BuildContext context) {

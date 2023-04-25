@@ -37,7 +37,7 @@ class _DetailPageState extends State<DetailPage> {
         'title': title,
         'content': content,
         'time': DateTime.now().toString()
-      }).whenComplete(() => print("$title  $content  eklendi"));
+      });
     } on FirebaseException catch (e) {
       showDialog(
         context: context,
@@ -57,7 +57,7 @@ class _DetailPageState extends State<DetailPage> {
         'title': title,
         'content': content,
         'time': DateTime.now().toString()
-      }).whenComplete(() => print("$title  $content  guncellendı"));
+      });
     } on FirebaseException catch (e) {
       showDialog(
         context: context,
@@ -75,7 +75,7 @@ class _DetailPageState extends State<DetailPage> {
       final notesRef = db.collection("notes-$uid");
       DocumentSnapshot<Map<String, dynamic>> document =
           await notesRef.doc(id).get();
-      print(document.data());
+
       _titleController.text = document.data()!["title"];
       _contentController.text = document.data()!["content"];
       return document;
@@ -98,7 +98,7 @@ class _DetailPageState extends State<DetailPage> {
         appBar: AppBar(
           backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
           centerTitle: true,
-          title: Text("Add"),
+          title: const Text("Add"),
         ),
         backgroundColor: Theme.of(context).backgroundColor,
         body: Center(
@@ -108,7 +108,7 @@ class _DetailPageState extends State<DetailPage> {
               return Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    SizedBox(
+                    const SizedBox(
                       height: 15,
                     ),
 
@@ -129,7 +129,7 @@ class _DetailPageState extends State<DetailPage> {
                               controller: _titleController,
                               decoration: const InputDecoration(
                                 border: InputBorder.none,
-                                hintText: 'Title',
+                                labelText: 'Title',
                               ),
                             ),
                           )),
@@ -155,7 +155,7 @@ class _DetailPageState extends State<DetailPage> {
                               controller: _contentController,
                               decoration: const InputDecoration(
                                 border: InputBorder.none,
-                                hintText: 'Content',
+                                labelText: 'Content',
                               ),
                             ),
                           )),
@@ -183,7 +183,7 @@ class _DetailPageState extends State<DetailPage> {
               ).whenComplete(() => Navigator.pop(context, "add"));
             }
           },
-          child: Icon(Icons.save),
+          child: const Icon(Icons.save),
         ),
       ),
     );

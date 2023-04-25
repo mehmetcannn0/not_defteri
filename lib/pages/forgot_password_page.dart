@@ -30,7 +30,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
         },
       );
     } on FirebaseAuthException catch (e) {
-      print("hata :  ${e}");
+      // print("hata :  ${e}");
       showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -86,9 +86,9 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                     keyboardType: TextInputType.emailAddress,
                     controller: _emailController,
                     decoration: const InputDecoration(
-                      border: InputBorder.none,
-                      hintText: 'Email',
-                    ),
+                        border: InputBorder.none,
+                        labelText: 'Email',
+                        hintText: "email@email.com"),
                   ),
                 ),
               ),
@@ -98,8 +98,8 @@ class _ForgotPasswordState extends State<ForgotPassword> {
             ),
             MaterialButton(
               onPressed: passwordReset,
-              child: const Text("Reset Password"),
               color: Theme.of(context).buttonColor,
+              child: const Text("Reset Password"),
             ),
           ],
         ),

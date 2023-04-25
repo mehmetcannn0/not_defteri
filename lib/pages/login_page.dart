@@ -29,7 +29,7 @@ class _LoginPageState extends State<LoginPage> {
         password: _passwordController.text,
       );
     } on FirebaseAuthException catch (e) {
-      print("hata :  ${e}");
+      // print("hata :  ${e}");
       showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -98,7 +98,8 @@ class _LoginPageState extends State<LoginPage> {
                                 controller: _emailController,
                                 decoration: const InputDecoration(
                                   border: InputBorder.none,
-                                  hintText: 'Email',
+                                  labelText: "Email",
+                                  hintText: 'email@email.com',
                                 ),
                               ),
                             )),
@@ -123,7 +124,8 @@ class _LoginPageState extends State<LoginPage> {
                                 obscureText: obscurepassword,
                                 decoration: InputDecoration(
                                   border: InputBorder.none,
-                                  hintText: 'Password',
+                                  labelText: "Password",
+                                  hintText: '******',
                                   suffixIcon: GestureDetector(
                                     onTap: showPassword,
                                     child: Icon(
