@@ -12,10 +12,8 @@ class _InfoPageState extends State<InfoPage> {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(),
-        body: Center(
-          child: Container(
-            child: Text('hesabı ve hesaba aıt verılerı sılme'),
-          ),
+        body: const Center(
+          child: Text('hesabı ve hesaba aıt verılerı sılme'),
         ),
       ),
     );

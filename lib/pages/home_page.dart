@@ -109,7 +109,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
+    // Size size = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
       appBar: AppBar(
@@ -144,25 +144,19 @@ class _HomePageState extends State<HomePage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Container(
-                child: Column(
-                  children: [
-                    CircleAvatar(
-                        // backgroundImage: NetworkImage(user.photoURL.toString()),
-                        ),
-                    Container(
-                      child: Text(fName),
-                    ),
-                    Container(
-                      child: Text(lName),
-                    ),
-                  ],
-                ),
+              Column(
+                children: [
+                  const CircleAvatar(
+                      // backgroundImage: NetworkImage(user.photoURL.toString()),
+                      ),
+                  Text(fName),
+                  Text(lName),
+                ],
               ),
               MaterialButton(
                 onPressed: () {
-                  Navigator.of(context).push(
-                      MaterialPageRoute(builder: (context) => ProfilePage()));
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => const ProfilePage()));
                 },
                 color: Theme.of(context).buttonColor,
                 child: Row(
@@ -180,7 +174,7 @@ class _HomePageState extends State<HomePage> {
               MaterialButton(
                 onPressed: () {
                   Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => InfoPage(),
+                    builder: (context) => const InfoPage(),
                   ));
                 },
                 color: Theme.of(context).buttonColor,
@@ -221,7 +215,7 @@ class _HomePageState extends State<HomePage> {
             child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            SizedBox(
+            const SizedBox(
               height: 15,
             ),
             FutureBuilder(
@@ -229,7 +223,7 @@ class _HomePageState extends State<HomePage> {
               builder: (BuildContext context, snapshot) {
                 if (snapshot.hasData) {
                   if ((snapshot.data.docs.length) == 0) {
-                    return Text("No data, click the + to add :)");
+                    return const Text("No data, click the + to add :)");
                   } else {
                     return Expanded(
                       child: ListView.builder(
@@ -245,12 +239,12 @@ class _HomePageState extends State<HomePage> {
                                             id: snapshot.data.docs[index].id,
                                           ))).then((value) => setState(() {}));
 
-                              print(snapshot.data.docs[index]["time"]);
+                              // print(snapshot.data.docs[index]["time"]);
                             },
                             child: Card(
                               color: Theme.of(context).primaryColor,
                               elevation: 3,
-                              margin: EdgeInsets.symmetric(
+                              margin: const EdgeInsets.symmetric(
                                   horizontal: 19, vertical: 9),
                               child: Padding(
                                 padding: const EdgeInsets.symmetric(
@@ -280,7 +274,7 @@ class _HomePageState extends State<HomePage> {
                                             Navigator.pop(context);
                                           });
                                     },
-                                    child: Icon(
+                                    child: const Icon(
                                       Icons.delete,
                                       color: Colors.red,
                                     ),
@@ -315,7 +309,7 @@ class _HomePageState extends State<HomePage> {
                 }
               },
             ),
-            SizedBox(
+            const SizedBox(
               height: 15,
             ),
           ],
