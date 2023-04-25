@@ -3,6 +3,7 @@ import 'package:cool_alert/cool_alert.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:not_defteri/pages/detail.dart';
+import 'package:not_defteri/pages/info_page.dart';
 import 'package:not_defteri/pages/profile_page.dart';
 
 class HomePage extends StatefulWidget {
@@ -177,7 +178,11 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
               MaterialButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => InfoPage(),
+                  ));
+                },
                 color: Theme.of(context).buttonColor,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
