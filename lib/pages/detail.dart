@@ -1,5 +1,10 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
 class DetailPage extends StatefulWidget {
   String uid;
@@ -15,9 +20,84 @@ class _DetailPageState extends State<DetailPage> {
   FirebaseFirestore db = FirebaseFirestore.instance;
 
   bool update = false;
+//pdf işlemleri
+//https://www.youtube.com/watch?v=3x92z0oHbtY&list=PL_5Icp260H5OvlxSWAsVPmsfJLi182w1N&index=1
+  final GlobalKey<SfPdfViewerState> _pdfViewerKey = GlobalKey();
+
+  PlatformFile? pickedFile;
+  UploadTask? uploadTask;
+
+  Future selectFile() async {
+    final result = await FilePicker.platform.pickFiles();
+    if (result == null) return;
+    setState(() {
+      pickedFile = result.files.first;
+      _pdfViewerKey.currentState?.openBookmarkView();
+    });
+    print(pickedFile!.path!);
+    print(pickedFile);
+  }
+
+  Future uploadFile() async {
+    print("upload calıstı");
+    final path = "files/${pickedFile!.name}";
+    final file = File(pickedFile!.path!);
+    final ref = FirebaseStorage.instance.ref().child(path);
+    // ref.putFile(file);
+    setState(() {
+      uploadTask = ref.putFile(file);
+    });
+    final snapshot = await uploadTask!.whenComplete(() {});
+    final urlDownload = await snapshot.ref.getDownloadURL();
+    print("download link : $urlDownload");
+    print("upload bitti");
+    setState(() {
+      uploadTask = null;
+    });
+    print("upload task temızlendı");
+  }
+
+  Widget buildProgress() {
+    return StreamBuilder<TaskSnapshot>(
+      stream: uploadTask?.snapshotEvents,
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          final data = snapshot.data!;
+          double progress = data.bytesTransferred / data.totalBytes;
+          return SizedBox(
+            height: 50,
+            child: Stack(
+              fit: StackFit.expand,
+              children: [
+                LinearProgressIndicator(
+                  value: progress,
+                  backgroundColor: Colors.grey,
+                  color: Colors.green,
+                ),
+                Center(
+                  child: Text(
+                    "${(100 * progress.roundToDouble())}%",
+                    style: TextStyle(
+                      color: Colors.white,
+                    ),
+                  ),
+                )
+              ],
+            ),
+          );
+        } else {
+          return SizedBox(
+            height: 50,
+          );
+        }
+      },
+    );
+  }
+
   @override
   initState() {
     super.initState();
+
     if (widget.id != "") {
       update = true;
     }
@@ -101,74 +181,119 @@ class _DetailPageState extends State<DetailPage> {
           title: const Text("Add"),
         ),
         backgroundColor: Theme.of(context).backgroundColor,
-        body: Center(
-          child: FutureBuilder(
-            future: update ? getData(widget.uid, widget.id) : null,
-            builder: (BuildContext context, snapshot) {
-              return Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    const SizedBox(
-                      height: 15,
-                    ),
+        body:
+            // SfPdfViewer.network(
+            //   'https://www.africau.edu/images/default/sample.pdf',
+            //   key: _pdfViewerKey,
+            // ),
 
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                      child: Container(
-                          decoration: BoxDecoration(
-                              color: Theme.of(context).dialogBackgroundColor,
-                              border: Border.all(
-                                  color: Theme.of(context).primaryColor),
-                              borderRadius: BorderRadius.circular(12)),
-                          child: Padding(
-                            padding: const EdgeInsets.only(left: 20.0),
-                            child: TextFormField(
-                              onChanged: (value) => _titleController.text,
-                              maxLines: null,
-                              textInputAction: TextInputAction.next,
-                              controller: _titleController,
-                              decoration: const InputDecoration(
-                                border: InputBorder.none,
-                                labelText: 'Title',
+            SingleChildScrollView(
+          child: Center(
+            child: FutureBuilder(
+              future: update ? getData(widget.uid, widget.id) : null,
+              builder: (BuildContext context, snapshot) {
+                return Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      const SizedBox(
+                        height: 15,
+                      ),
+
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                        child: Container(
+                            decoration: BoxDecoration(
+                                color: Theme.of(context).dialogBackgroundColor,
+                                border: Border.all(
+                                    color: Theme.of(context).primaryColor),
+                                borderRadius: BorderRadius.circular(12)),
+                            child: Padding(
+                              padding: const EdgeInsets.only(left: 20.0),
+                              child: TextFormField(
+                                onChanged: (value) => _titleController.text,
+                                maxLines: null,
+                                textInputAction: TextInputAction.next,
+                                controller: _titleController,
+                                decoration: const InputDecoration(
+                                  border: InputBorder.none,
+                                  labelText: 'Title',
+                                ),
+                              ),
+                            )),
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      //content
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                        child: Container(
+                            decoration: BoxDecoration(
+                                color: Theme.of(context).dialogBackgroundColor,
+                                border: Border.all(
+                                    color: Theme.of(context).primaryColor),
+                                borderRadius: BorderRadius.circular(12)),
+                            child: Padding(
+                              padding: const EdgeInsets.only(left: 20.0),
+                              child: TextFormField(
+                                onChanged: (value) => _titleController.text,
+                                maxLines: null,
+                                textInputAction: TextInputAction.next,
+                                controller: _contentController,
+                                decoration: const InputDecoration(
+                                  border: InputBorder.none,
+                                  labelText: 'Content',
+                                ),
+                              ),
+                            )),
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Column(
+                        children: [
+                          Text("pdf acılacak"),
+                          //pdf upload edıldıkten sonra url alınarak acılmalı
+                          // yada yerelde gosterecek onaylanırsa yukleyecek
+                          if (pickedFile != null)
+                            Container(
+                              height: 550,
+                              color: Colors.blue,
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Center(
+                                  child: SfPdfViewer.file(
+                                    File(pickedFile!.path!),
+                                    // SfPdfViewer.network(
+                                    //   "https://www.africau.edu/images/default/sample.pdf",
+                                    //   key: _pdfViewerKey,
+                                    //   // canShowScrollHead: true,
+                                  ),
+                                ),
                               ),
                             ),
-                          )),
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    //content
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                      child: Container(
-                          decoration: BoxDecoration(
-                              color: Theme.of(context).dialogBackgroundColor,
-                              border: Border.all(
-                                  color: Theme.of(context).primaryColor),
-                              borderRadius: BorderRadius.circular(12)),
-                          child: Padding(
-                            padding: const EdgeInsets.only(left: 20.0),
-                            child: TextFormField(
-                              onChanged: (value) => _titleController.text,
-                              maxLines: null,
-                              textInputAction: TextInputAction.next,
-                              controller: _contentController,
-                              decoration: const InputDecoration(
-                                border: InputBorder.none,
-                                labelText: 'Content',
-                              ),
-                            ),
-                          )),
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    )
-                  ]);
-            },
+                          ElevatedButton(
+                              onPressed: () {
+                                selectFile().whenComplete(() {});
+                              },
+                              child: Text("select file")),
+                          ElevatedButton(
+                              onPressed:
+                                  pickedFile != null ? uploadFile : () {},
+                              child: Text("upload file")),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          buildProgress(),
+                        ],
+                      )
+                    ]);
+              },
+            ),
           ),
         ),
         floatingActionButton: FloatingActionButton(
-          backgroundColor: Theme.of(context).buttonColor,
+          backgroundColor: Colors.deepPurple,
           foregroundColor: Theme.of(context).primaryColor,
           onPressed: () {
             if (update) {

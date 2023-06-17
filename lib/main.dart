@@ -13,10 +13,16 @@ void main() async {
   runApp(const MyApp());
 }
 // TODO: renkler duzenlecek
-// TODO: drawer duzenlenecek
+//** detail +*/ +home + forgot + register
+
 // TODO: gereksiz printler + comment ler sılınecek
+//** tum printler commit yapıldı
+//** detail +*/ +register + forgot+home
+//!!! commıtler ıncelenedcek
+
 // TODO: hata alınabılecek yerler test edılecek
-// TODO: data ekle butonu appbar a tasınacak
+
+// !!! TODO: bos data eklenıyor
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -25,14 +31,16 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(
-        backgroundColor: Colors.grey[300],
-        dialogBackgroundColor: Colors.grey[200],
-        primaryColor: Colors.white,
-        primaryColorDark: Colors.black,
-        buttonColor: Colors.deepPurple,
-      ),
+          backgroundColor: Colors.grey[300],
+          dialogBackgroundColor: Colors.grey[200],
+          primaryColor: Colors.white,
+          primaryColorDark: Colors.black,
+          // buttonColor: Colors.deepPurple,
+          appBarTheme: AppBarTheme(
+            backgroundColor: Colors.deepPurple[200],
+          )),
       debugShowCheckedModeBanner: false,
-      home: MainPage(),
+      home: const MainPage(),
     );
   }
 }

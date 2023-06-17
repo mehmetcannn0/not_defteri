@@ -158,7 +158,7 @@ class _HomePageState extends State<HomePage> {
                   Navigator.of(context).push(MaterialPageRoute(
                       builder: (context) => const ProfilePage()));
                 },
-                color: Theme.of(context).buttonColor,
+                color: Colors.deepPurple,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -177,7 +177,7 @@ class _HomePageState extends State<HomePage> {
                     builder: (context) => const InfoPage(),
                   ));
                 },
-                color: Theme.of(context).buttonColor,
+                color: Colors.deepPurple,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -194,7 +194,7 @@ class _HomePageState extends State<HomePage> {
                 onPressed: () {
                   FirebaseAuth.instance.signOut();
                 },
-                color: Theme.of(context).buttonColor,
+                color: Colors.deepPurple,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -302,7 +302,7 @@ class _HomePageState extends State<HomePage> {
                   return Expanded(
                     child: Center(
                       child: CircularProgressIndicator(
-                        color: Theme.of(context).buttonColor,
+                        color: Colors.deepPurple,
                       ),
                     ),
                   );

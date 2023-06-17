@@ -145,7 +145,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         );
                       }
                     },
-                    color: Theme.of(context).buttonColor,
+                    color: Colors.deepPurple,
                     child: const Text("sifre yenıle"),
                   ),
                 ],
@@ -210,7 +210,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       }
                     },
                     child: const Text("send email"),
-                    color: Theme.of(context).buttonColor,
+                    color: Colors.deepPurple,
                   ),
                 ],
               ),
