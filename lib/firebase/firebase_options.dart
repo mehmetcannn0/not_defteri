@@ -23,15 +23,9 @@ class DefaultFirebaseOptions {
       case TargetPlatform.android:
         return android;
       case TargetPlatform.iOS:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for ios - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return ios;
       case TargetPlatform.macOS:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for macos - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return macos;
       case TargetPlatform.windows:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for windows - '
@@ -64,5 +58,25 @@ class DefaultFirebaseOptions {
     messagingSenderId: '712073737303',
     projectId: 'notes-with-firebase-897fc',
     storageBucket: 'notes-with-firebase-897fc.appspot.com',
+  );
+
+  static const FirebaseOptions ios = FirebaseOptions(
+    apiKey: 'AIzaSyCUBEQXo9VbcfFXf569_3EH1xLADCRaEE0',
+    appId: '1:712073737303:ios:fd7fd2a232c19b1a27df12',
+    messagingSenderId: '712073737303',
+    projectId: 'notes-with-firebase-897fc',
+    storageBucket: 'notes-with-firebase-897fc.appspot.com',
+    iosClientId: '712073737303-9an5fvi470nmh9amgq0v439600h7ccsf.apps.googleusercontent.com',
+    iosBundleId: 'com.example.notDefteri',
+  );
+
+  static const FirebaseOptions macos = FirebaseOptions(
+    apiKey: 'AIzaSyCUBEQXo9VbcfFXf569_3EH1xLADCRaEE0',
+    appId: '1:712073737303:ios:fd7fd2a232c19b1a27df12',
+    messagingSenderId: '712073737303',
+    projectId: 'notes-with-firebase-897fc',
+    storageBucket: 'notes-with-firebase-897fc.appspot.com',
+    iosClientId: '712073737303-9an5fvi470nmh9amgq0v439600h7ccsf.apps.googleusercontent.com',
+    iosBundleId: 'com.example.notDefteri',
   );
 }
